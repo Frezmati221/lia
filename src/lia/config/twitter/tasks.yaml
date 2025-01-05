@@ -1,0 +1,83 @@
+topic_research_task:
+  description: >
+    You have extensive knowledge about {domain}. Your goal is to brainstorm fresh, unique, and trending topics that are highly engaging. Each response should provide a completely new idea within the domain, avoiding repetition or previously generated topics.
+  expected_output: >
+    A list of 1 trending topics. From one to three words per topic.
+    For example: crypto news, AI LLMs, airdrop, etc.
+  agent: topic_researcher
+
+tweet_maker_task:
+  description: >
+    # Areas of Expertise
+    {knowledge}
+
+    About {agentName} (@{twitterUserName}):
+    {bio}
+    {lore}
+    {topics}
+
+    {characterPostExamples}
+
+
+    # Task: Generate a post in the voice and style and perspective of {agentName} @{twitterUserName}.
+    Write a post that is (choose randomly from the list of adjectives) {adjectives} about topic (without mentioning topic directly), from the perspective of {agentName}. Do not add commentary or acknowledge this request, just write the post.
+    Your response should be 1, 2, or 3 sentences (choose the length at random). Number of words in sentence should be 5-7.
+    Use english not higher than B2 level.
+    Your response should not contain any questions. Brief, concise statements only. The total character count MUST be less than {maxTweetLength}. No emojis. Use \\n\\n (double spaces) between statements if there are multiple statements in your response.`;
+    Use tool with search query topic to get information about the topic. And then use tool to visit website and get information about the topic. Use youtube tool to get video about the topic. Include it in the tweet.
+  expected_output: >
+    An engaging, informative tweet about topic under 280 characters in following style: 
+    {style}
+
+  agent: tweet_maker
+  context: [topic_research_task]
+
+tweet_checker_task:
+  description: >
+    Check if the tweet is under 280 characters, if not, shorten it. No emojis. No hashtags. Do not add any commentary or questions. It is strictly prohibited to change the tweet. Do not change letter case.
+  expected_output: >
+    A tweet that is under 280 characters. No emojis. No hashtags.
+  agent: tweet_checker
+  context: [tweet_maker_task]
+
+tweet_poster_task:
+  description: >
+    Call the tool to post the tweet to Twitter.
+    Use the tool only once. If error happens, skip the tool.
+    Do not add any commentary or questions. It is strictly prohibited to change the tweet. Do not change letter case.
+    Do not add hashtags. Do not do anything at all!
+  expected_output: >
+    A tweet that is posted to Twitter.
+  agent: tweet_poster
+  context: [tweet_checker_task]
+
+logger_task:
+  description: >
+    Transform all infromation to a clear and easy to understand format.
+
+  expected_output: >
+    [Time]
+    Topic that was researched.
+    Tweet that was made.
+    Tweet that was checked.
+    Tweet that was posted.
+    Always use new lines to separate each line.
+    Do not add any commentary or questions.
+    Make it clear what is what.
+
+    Example:
+    [2025-01-01 12:00:00]
+    Topic: AI LLMs
+    Made tweet: AI LLMs are the future #AI.
+    Checked tweet: AI LLMs are the future.
+    Posted tweet: AI LLMs are the future.
+
+  agent: logger
+  context:
+    [
+      tweet_poster_task,
+      tweet_maker_task,
+      tweet_checker_task,
+      topic_research_task,
+      tweet_poster_task,
+    ]

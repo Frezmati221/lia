@@ -1,0 +1,52 @@
+generate_plot_task:
+  description: >
+    Generate a plot for a given topic - crypto.
+  expected_output: >
+    A plot for a given topic.
+  agent: plot_generator
+
+generate_video_task:
+  description: >
+    Generate a JSON file describing the plot. Only output the JSON file. No other text or comments.
+    The JSON file should be in the format of the example below. Fields that exists: text, start_time, duration, animation.
+    Animation fields is optional. Use animations that suit the text, plot and video.
+  expected_output: >
+    A JSON file describing the plot.
+    String indices must be integers.
+    Example:
+    [
+      {
+        "text": "Welcome to the Video!",
+        "start_time": 0,
+        "duration": 3,
+      },
+      {
+        "text": "This is generated using Python.",
+        "start_time": 3,
+        "duration": 4,
+        "animation": {
+          "type": "move",
+          "start_position": [-640, 360],
+          "end_position": [640, 360]
+        }
+      },
+      {
+        "text": "Have a great day!",
+        "start_time": 7,
+        "duration": 3,
+        "animation": {
+          "type": "scale",
+          "start_scale": 0.5,
+          "end_scale": 2.0
+        }
+      }
+    ]
+  agent: video_generator
+  context: [generate_plot_task]
+make_video_task:
+  description: >
+    Use the tools to make a video from the JSON file.
+  expected_output: >
+    A video file.
+  agent: video_generator
+  context: [generate_video_task]
