@@ -1,13 +1,14 @@
 generate_plot_task:
   description: >
-    Generate a plot for a given topic - crypto.
+    Generate a plot for a short video - 20 seconds. It should be some interseting fact or story about a given topic.
+    plot should be small, simple and easy to understand. Not boring.
   expected_output: >
     A plot for a given topic.
   agent: plot_generator
 
 generate_video_task:
   description: >
-    Generate a JSON file describing the plot. Only output the JSON file. No other text or comments.
+    Generate a JSON file about the plot. Only output the JSON file. No other text or comments.
     The JSON file should be in the format of the example below. Fields that exists: text, start_time, duration, animation.
     Animation fields is optional. Use animations that suit the text, plot and video.
   expected_output: >
@@ -43,10 +44,11 @@ generate_video_task:
     ]
   agent: video_generator
   context: [generate_plot_task]
+
 make_video_task:
   description: >
     Use the tools to make a video from the JSON file.
   expected_output: >
     A video file.
-  agent: video_generator
+  agent: video_maker
   context: [generate_video_task]

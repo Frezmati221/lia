@@ -73,7 +73,11 @@ async def search_tweets(query: str, product: Literal['Top', 'Latest', 'Popular']
         for tweet in tweets:
             tweet_data = {
                 'id': tweet.id,
-                'text': tweet.text
+                'text': tweet.text,
+                'likes': tweet.favorite_count,
+                'views': tweet.view_count,
+                'retweets': tweet.retweet_count,
+                'replies': tweet.reply_count,
             }
             tweet_list.append(tweet_data)
 

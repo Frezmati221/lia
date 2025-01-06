@@ -35,7 +35,7 @@ class Lia():
 		return Agent(
 			config=self.agents_config['tweet_maker'],
 			verbose=True,
-			tools=[SerperDevTool(n_results=10), ScrapeWebsiteTool(), YoutubeChannelSearchTool()],
+			tools=[twitter_tools.SearchTweetsTool(),SerperDevTool(n_results=10), ScrapeWebsiteTool(), YoutubeChannelSearchTool()],
 		)
 
 	@agent

@@ -1,8 +1,8 @@
 tweets_searcher_task:
   description: >
-    You have extensive knowledge about {domain}. Your goal is to brainstorm fresh, unique, and trending topics that are highly engaging. Each response should provide a completely new idea within the domain, avoiding repetition or previously generated topics. Search for tweets related to the topic. Generate a topic, not more than 3 words. Use topic for search.
+    You have extensive knowledge about {domain}. Your goal is to brainstorm fresh, unique, and trending topics that are highly engaging. Each response should provide a completely new idea within the domain, avoiding repetition or previously generated topics. Search for tweets related to the topic. Generate a topic, not more than 1 words. Use topic for search.
   expected_output: >
-    A list of tweets with their ids.
+    A list of tweets with their ids, text, likes, views, retweets, replies.
   agent: tweets_searcher
 
 tweets_reader_task:
@@ -24,6 +24,7 @@ tweets_reader_task:
     Tweets are given in JSON format.
     Respond with qualifying action tags only. Choose any combination of [RETWEET] and [QUOTE]that are appropriate. Each action must be on its own line. Your response must only include the chosen actions.
     Make sure that tweets are not scam, contains true information.
+    Tweets has to be popular. More than 50k views. More than 1000 likes. More than 100 retweets. More than 100 replies.
   expected_output: >
     A list of actions with their ids. No other text. You have to include ids in your response. It is very important.
     Example:

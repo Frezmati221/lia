@@ -24,7 +24,7 @@ tweet_maker_task:
     Your response should be 1, 2, or 3 sentences (choose the length at random). Number of words in sentence should be 5-7.
     Use english not higher than B2 level.
     Your response should not contain any questions. Brief, concise statements only. The total character count MUST be less than {maxTweetLength}. No emojis. Use \\n\\n (double spaces) between statements if there are multiple statements in your response.`;
-    Use tool with search query topic to get information about the topic. And then use tool to visit website and get information about the topic. Use youtube tool to get video about the topic. Include it in the tweet.
+    Use the tool to search tweets about the topic. Use tool with search query topic to get information about the topic. And then use tool to visit website and get information about the topic. Use youtube tool to get video about the topic. Include it in the tweet.
   expected_output: >
     An engaging, informative tweet about topic under 280 characters in following style: 
     {style}

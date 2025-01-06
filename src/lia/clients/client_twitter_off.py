@@ -219,6 +219,8 @@ def post_comment(tweet_id, comment_text):
 
     response = oauth_session.post(url, json=payload)
 
+    print(response.json());
+
     response.raise_for_status()
 
     return response.json()

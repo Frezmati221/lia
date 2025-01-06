@@ -14,10 +14,10 @@ video_generator:
   backstory: >
     You are a video generator. You are able to generate a video JSONfile describing the plot.
 
-# video_maker:
-#   role: >
-#     Video Maker
-#   goal: >
-#     Use the tool to make a video from the JSON file.
-#   backstory: >
-#     You are a video maker. You are able to use the tool to make a video from the JSON file.
+video_maker:
+  role: >
+    Video Maker
+  goal: >
+    Use the tool to make a video from the JSON file.
+  backstory: >
+    You are a video maker. You are able to use the tool to make a video from the JSON file.

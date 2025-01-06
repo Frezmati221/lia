@@ -2,6 +2,8 @@ from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from lia.tools.main_tools import TimeTool
 from lia.tools.video import MakeVideoTool
+from crewai_tools import DallETool
+
 @CrewBase
 class VideoGenerateCrew:
     """VideoGenerateCrew crew"""
@@ -21,6 +23,13 @@ class VideoGenerateCrew:
     def video_generator(self) -> Agent:
         return Agent(
             config=self.agents_config['video_generator'],
+            verbose=True,
+        )
+    
+    @agent
+    def video_maker(self) -> Agent:
+        return Agent(
+            config=self.agents_config['video_maker'],
             verbose=True,
         )
 
@@ -54,5 +63,7 @@ class VideoGenerateCrew:
             tasks=self.tasks,
             process=Process.sequential,
             verbose=True,
+      		planning=True,
+			planning_llm="gpt-4o-mini",
             # process=Process.hierarchical, # In case you wanna use that instead https://docs.crewai.com/how-to/Hierarchical/
         )

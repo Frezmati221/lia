@@ -37,6 +37,7 @@ dotenv.load_dotenv()
 def run():
     logger.info('Starting admin panel')
     admin_panel.run(host='0.0.0.0', port=1234)
+    # VideoGenerateCrew().crew().kickoff(inputs={})
     # inputs = {
     #     'style': characterLia['style'],
     #     'domain': characterLia['topics'],

@@ -3,6 +3,7 @@ from typing import Type
 from pydantic import BaseModel, Field
 import lia.clients.client_video as client_video
 import asyncio
+import json
 class VideoToolInput(BaseModel):
     """Input schema for VideoTool."""
     json_data: dict = Field(..., description="JSON file describing the plot.")
@@ -15,5 +16,5 @@ class MakeVideoTool(BaseTool):
     args_schema: Type[BaseModel] = VideoToolInput
 
     def _run(self, json_data: str) -> str:
-        return asyncio.run(client_video.make_video(json_data))
+        return asyncio.run(client_video.make_video(json.dumps(json_data)))
 
