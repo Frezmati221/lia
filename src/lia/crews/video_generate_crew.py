@@ -31,6 +31,7 @@ class VideoGenerateCrew:
         return Agent(
             config=self.agents_config['video_maker'],
             verbose=True,
+            tools=[MakeVideoTool()],
         )
 
     @task
@@ -51,7 +52,6 @@ class VideoGenerateCrew:
     def make_video_task(self) -> Task:
         return Task(
             config=self.tasks_config['make_video_task'],
-            tools=[MakeVideoTool()],
         )
     
     @crew

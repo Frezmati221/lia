@@ -6,15 +6,15 @@ import asyncio
 import json
 class VideoToolInput(BaseModel):
     """Input schema for VideoTool."""
-    json_data: dict = Field(..., description="JSON file describing the plot.")
+    xml_data: str = Field(..., description="XML text that will be used to make a video.")
 
 class MakeVideoTool(BaseTool):
     name: str = "MakeVideoTool"
     description: str = (
-        "A tool that can be used to make a video from a JSON file."
+        "A tool that can be used to make a video from a XML file."
     )
     args_schema: Type[BaseModel] = VideoToolInput
 
-    def _run(self, json_data: str) -> str:
-        return asyncio.run(client_video.make_video(json.dumps(json_data)))
+    def _run(self, xml_data: str) -> str:
+        return asyncio.run(client_video.make_video(xml_data))
 

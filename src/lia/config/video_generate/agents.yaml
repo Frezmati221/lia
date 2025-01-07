@@ -10,14 +10,14 @@ video_generator:
   role: >
     Video Generator
   goal: >
-    Generate a video JSON file describing the plot.
+    Generate a video XML file describing the plot.
   backstory: >
-    You are a video generator. You are able to generate a video JSONfile describing the plot.
+    You are a video generator. You are able to generate a video XML file describing the plot.
 
 video_maker:
   role: >
     Video Maker
   goal: >
-    Use the tool to make a video from the JSON file.
+    Use the tool to make a video from the XML file.
   backstory: >
-    You are a video maker. You are able to use the tool to make a video from the JSON file.
+    You are a video maker. You are able to use the tool to make a video from the XML file.
