@@ -13,6 +13,9 @@ generate_video_task:
     Make sure that text in <text> tag is not too long.
     If text is too long, split it into multiple scenes.
     The XML file should be in the format of the example below. Fields that exists: text, start_time, duration, animation.
+    You have to use stickers. Stickers are set with <sticker> tag. They have image_path, start_time, duration, animation_type, start_position, end_position fields.
+    Stickers paths:
+      idle.png - idle sticker, simple stickers without any emotions and positions.
     Animation fields is optional. Use animations that suit the text, plot and video.
   expected_output: >
     The XML file should be in the format of the example below. Fields that exists: text, start_time, duration, animation.
@@ -27,6 +30,14 @@ generate_video_task:
         <duration>5</duration>
         <animation_type>fade_in</animation_type>
     </scene>
+    <sticker>
+        <image_path>sticker1.png</image_path>
+        <start_time>2</start_time>
+        <duration>5</duration>
+        <animation_type>move</animation_type>
+        <start_position>100,100</start_position>
+        <end_position>500,500</end_position>
+    </sticker>
     <scene>
         <text>In the 1940s, a scientist unwittingly melted a chocolate bar...</text>
         <start_time>5</start_time>
@@ -34,20 +45,6 @@ generate_video_task:
         <animation_type>zoom</animation_type>
         <start_scale>0.8</start_scale>
         <end_scale>1.0</end_scale>
-    </scene>
-    <scene>
-        <text>Excitedly, he discovered how quickly a popcorn kernel pops...</text>
-        <start_time>10</start_time>
-        <duration>5</duration>
-        <animation_type>shake</animation_type>
-        <intensity>5</intensity>
-    </scene>
-    <scene>
-        <text>Innovation often comes from unexpected moments!</text>
-        <start_time>15</start_time>
-        <duration>5</duration>
-        <animation_type>slide</animation_type>
-        <direction>up</direction>
     </scene>
     </plot>
   agent: video_generator

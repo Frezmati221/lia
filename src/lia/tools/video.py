@@ -16,5 +16,5 @@ class MakeVideoTool(BaseTool):
     args_schema: Type[BaseModel] = VideoToolInput
 
     def _run(self, xml_data: str) -> str:
-        return asyncio.run(client_video.make_video(xml_data))
+        return client_video.make_video(xml_data)
 

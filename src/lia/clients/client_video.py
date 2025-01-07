@@ -1,9 +1,10 @@
 import xml.etree.ElementTree as ET
 import cv2
 import numpy as np
+import os
 
 # Define the function to make the video from the parsed XML string
-def make_video(xml_string):
+def make_video(xml_string, output_path="sources/outputs/dynamic_animations_video.mp4", sticker_directory="sources/stickers"):
     try:
 
         print(xml_string)
@@ -14,6 +15,8 @@ def make_video(xml_string):
         video_width, video_height = 1280, 720
         fps = 30
         plot_data = []
+        sticker_data = []
+
 
         # Parse the XML data from the string
         for scene in root.findall('scene'):
@@ -31,10 +34,20 @@ def make_video(xml_string):
             }
             plot_data.append(item)
 
+        for sticker in root.findall('sticker'):
+            sticker_data.append({
+                "image_path": sticker.find('image_path').text,
+                "start_time": float(sticker.find('start_time').text),
+                "duration": float(sticker.find('duration').text),
+                "animation_type": sticker.find('animation_type').text,
+                "start_position": [float(x) for x in sticker.find('start_position').text.split(',')],
+                "end_position": [float(x) for x in sticker.find('end_position').text.split(',')],
+            })
+
+
         # Video output settings
         fourcc = cv2.VideoWriter_fourcc(*"mp4v")
-        output_file = "dynamic_animations_video.mp4"
-        out = cv2.VideoWriter(output_file, fourcc, fps, (video_width, video_height))
+        out = cv2.VideoWriter(output_path, fourcc, fps, (video_width, video_height))
 
         # Generate video frames
         for frame_idx in range(int(sum(item["duration"] for item in plot_data) * fps)):
@@ -103,6 +116,50 @@ def make_video(xml_string):
 
                     break  # We only show one scene at a time per frame
 
+            for sticker in sticker_data:
+                if sticker["start_time"] <= current_time < sticker["start_time"] + sticker["duration"]:
+                    # Construct full path for the sticker image
+                    image_path = os.path.join(sticker_directory, sticker["image_path"])
+                    image = cv2.imread(image_path, cv2.IMREAD_UNCHANGED)
+                    if image is None:
+                        print(f"Warning: Sticker image not found at {image_path}")
+                        continue
+
+                    # Resize sticker to fit within video frame if needed
+                    h, w = image.shape[:2]
+                    max_width, max_height = video_width // 2, video_height // 2  # Limit sticker size
+                    scale_factor = min(max_width / w, max_height / h, 1)  # Only shrink if necessary
+                    new_width, new_height = int(w * scale_factor), int(h * scale_factor)
+                    image = cv2.resize(image, (new_width, new_height), interpolation=cv2.INTER_AREA)
+
+                    # Handle transparency (alpha channel)
+                    if image.shape[2] == 4:  # RGBA
+                        bgr = image[:, :, :3]
+                        alpha_channel = image[:, :, 3] / 255.0
+                    else:  # No alpha channel
+                        bgr = image
+                        alpha_channel = np.ones((new_height, new_width), dtype=np.float32)
+
+                    # Animation (e.g., move)
+                    animation = sticker.get("animation_type", "none")
+                    progress = (current_time - sticker["start_time"]) / sticker["duration"]
+                    x, y = sticker["start_position"]
+
+                    if animation == "move":
+                        end_x, end_y = sticker["end_position"]
+                        x = int(sticker["start_position"][0] + (end_x - sticker["start_position"][0]) * progress)
+                        y = int(sticker["start_position"][1] + (end_y - sticker["start_position"][1]) * progress)
+
+                    x = int(max(0, min(video_width - new_width, x)))
+                    y = int(max(0, min(video_height - new_height, y)))
+
+                    for c in range(3):
+                        frame[y:y+int(new_height), x:x+int(new_width), c] = (
+                            alpha_channel * bgr[:, :, c] +
+                            (1 - alpha_channel) * frame[y:y+int(new_height), x:x+int(new_width), c]
+                        )
+
+                    
             # Write frame to video
             out.write(frame)
 
@@ -110,7 +167,7 @@ def make_video(xml_string):
         out.release()
         return {
             "status": "success",
-            "message": f"Video with animations created successfully: {output_file}"
+            "message": f"Video with animations created successfully: {output_path}"
         }
     except Exception as e:
         return {
