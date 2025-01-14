@@ -167,7 +167,7 @@
 
       async function checkLoginStatus() {
         try {
-          const response = await fetch("/login-status");
+          const response = await fetch("/twitter/status");
           if (!response.ok) throw new Error("Failed to check login status.");
           const data = await response.json();
           toggleLoginButtons(data.loginRequired);

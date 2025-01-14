@@ -66,6 +66,8 @@ async def test(text: str):
 
 async def search_tweets(query: str, product: Literal['Top', 'Latest', 'Popular'], count: int = 25, cursor: str | None = None):
     try:
+        if(os.getenv('state') != 'prod'):
+            return []
         logger.info(f'Searching {count} tweets')
         tweets = await client.search_tweet(query, product, count, cursor)
         tweet_list = []
