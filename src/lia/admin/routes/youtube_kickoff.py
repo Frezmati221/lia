@@ -145,6 +145,9 @@ def register_youtube_kickoff_routes(app):
         try:
             flow.fetch_token(authorization_response=request.url.replace("http://", "https://"))
             credentials = flow.credentials
+            print("="*30)
+            print(credentials.to_json())
+            print("="*30)
             save_credentials_to_yaml(credentials)
             return redirect('http://localhost:3000')
  

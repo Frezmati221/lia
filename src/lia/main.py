@@ -38,10 +38,10 @@ dotenv.load_dotenv()
 
 
 def run():
-    # upload_video("svideo/video.mp4")
+    upload_video("svideo/video.mp4")
     # logger.info('Starting admin panel')
 
-    admin_panel.run(debug=True, host='0.0.0.0', port=1234)
+    # admin_panel.run(debug=True, host='0.0.0.0', port=1234)
     
     # log_dir = os.getenv('VIDEO_EXCLUDE_TOPICS_PATH') + "/"
     # base_filename = 'svideo_exclude_topic'

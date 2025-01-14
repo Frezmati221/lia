@@ -14,6 +14,7 @@ plot_maker_task:
     Tell a fact about topic. It must be real. It must be interesting fact to keep viewer's attention.
     Tell the story in duration 30 seconds. You are telling the story to a viewer, you must grab his attention. Use very easy words, language.
     This story will be told in a video with AI voice. Do not use any symbols or any special characters. Make it easy for AI to generate voice.
+    Numbers write in numbers, never write numbers in words.
     Do not refer to viewer. Do not make anything to the end.
     Each scene must be 5 seconds. Not longer!
     The image should be related to the text and reflect what is written in the text.
@@ -42,6 +43,7 @@ plot_maker_task:
 image_generator_task:
   description: >
     Use tool to generate or find in the internet images.
+    Use tool to generate or find in the internet images.
     If ImageType is "Real", use tool to find image in the internet. When using the tool, use only key words for the image, do not use any additional text, so it will be easier to find image. Not more than 5 words. Never search collages or images with multiple objects.
     If ImageType is "AI", use tool to generate image.
     Make sure that image url is unique. If image url is not unique, use tool again to generate new image.
@@ -62,6 +64,7 @@ image_generator_task:
 
 
     Before giving final answer, check if all <TextPart> are in <FullText>. If not, add missing words to new <TextPart>. It is mandatory to have all <TextPart>!
+    From all <TextPart> you can get <FullText>, if not, add missing words to new <FullText>. It is very important!
 
   expected_output: >
     All images with urls. Be very careful with urls. They must be correct. Without them video will not work.

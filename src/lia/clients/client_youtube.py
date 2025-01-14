@@ -7,6 +7,7 @@ from googleapiclient.http import MediaFileUpload
 from openai import OpenAI
 from flask import jsonify
 from google_auth_oauthlib.flow import InstalledAppFlow
+import ast
 
 def get_authenticated_service():
     try:
@@ -26,6 +27,7 @@ def get_authenticated_service():
                 credentials = get_new_credentials()
                 save_credentials_to_yaml(credentials, 'config.yaml')
         else:
+            print("Credentials are not valid, getting new credentials")
             credentials = get_new_credentials()
             save_credentials_to_yaml(credentials, 'config.yaml')
 
@@ -36,7 +38,7 @@ def load_credentials_from_yaml(config_path):
         credentials_data = yaml.safe_load(config_file)
         # Ensure all necessary fields are present
         if not all(key in credentials_data for key in ['token', 'refresh_token', 'token_uri', 'client_id', 'client_secret', 'scopes']):
-            raise ValueError("Missing necessary credential fields in the YAML file.")
+            print("Missing necessary credential fields in the YAML file.")
         return google.oauth2.credentials.Credentials(
             token=credentials_data['token'],
             refresh_token=credentials_data['refresh_token'],
@@ -48,8 +50,9 @@ def load_credentials_from_yaml(config_path):
 
 def get_new_credentials():
     flow = InstalledAppFlow.from_client_secrets_file(
-        'client_secret.json',  # Path to your client_secret.json file
-        scopes=['https://www.googleapis.com/auth/youtube.upload']
+        'client_secret_1098259257856-1bkfr683cp83gfi98l1jn6lliqnokvha.apps.googleusercontent.com.json',  # Path to your client_secret.json file
+        scopes=['https://www.googleapis.com/auth/youtube.upload'],
+        access_type='offline',  # Request offline access to get a refresh token
     )
     credentials = flow.run_local_server(port=0)
     return credentials
@@ -81,21 +84,36 @@ def upload_video(file):
         plot_content = plot_file.read()
     print(plot_content)
 
-    response = client.chat.completions.create(
+    title = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[{"role": "user", "content": f"Generate a YouTube video title based on the following plot: {plot_content}. Return only title, no additional text, no quotes. No more than 5 words. Examples: 'Finally, you know it', 'Did you know that...', 'How is it possible?', 'How is it possible?', 'Why you leave your footwear outside a temple?', 'Shocking Link Found Between Ancient India and The Mayan Civilization'."}]
             )
-    print(response.choices[0].message.content)
-
+    
+    description = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[{"role": "user", "content": f"Generate a YouTube video description based on the following plot: {plot_content}. Return only description, no additional text, no quotes. No more than 25 words."}]
+            )
+    
+    tags_response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[{"role": "user", "content": f"Generate a YouTube video tags based on the following plot: {plot_content}. Return only tags, no additional text, no quotes. No more than 5 tags. Return array of tags. Examples: ['ancient india', 'mayan civilization', 'shocks', 'ancient history', 'ancient civilizations']."}]
+            )
+    
+    print(tags_response.choices[0].message.content)
+    tags_string = tags_response.choices[0].message.content 
+    tags = ast.literal_eval(tags_string)
     request_body = {
         "snippet": {
-            "title": response.choices[0].message.content + "#Shorts",
-            # "description": description,
-            # "tags": tags,
+            "title": title.choices[0].message.content + " #Shorts",
+            "description": description.choices[0].message.content,
+            "tags": tags,
             "categoryId": category_id
         },
         "status": {
-            "privacyStatus": privacy_status
+            "privacyStatus": privacy_status,
+            "contentRating": {
+                "ytRating": "ytAgeRestricted"
+            }
         }
     }
 
